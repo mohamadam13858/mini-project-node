@@ -42,4 +42,14 @@ module.exports = class Cart {
 
     }
 
+
+static deleteProduct = (id) => {
+ fs.readFile(p , (fileContent , err ) => {
+    if (err) {
+        return
+    }
+    const updatedCart = {...cart}
+ })
+}
+
 }
