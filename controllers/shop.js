@@ -48,9 +48,6 @@ exports.getCart = (req, res, next) => {
                     cartProduct.push({ prodcutData: product, qty: cartProductData.qty })
                 }
             }
-
-            console.log(cartProduct, 'cartProduct');
-            
             res.render('shop/cart', {
                 pageTitle: 'Your Cart',
                 path: '/cart',
@@ -69,9 +66,17 @@ exports.postCart = (req, res, next) => {
     Product.findById(prodId, (product) => {
         Cart.addProduct(prodId, product.price)
     })
-
-
     res.redirect('/cart')
+}
+
+
+
+exports.postCartDeleteProduct = (req , res , next) => {
+    const prodId = req.body.productId
+    Product.findById(prodId , product => {
+        Cart.deleteProduct(prodId , product.price)
+        res.redirect('/cart')
+    })
 }
 
 
