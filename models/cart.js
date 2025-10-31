@@ -38,19 +38,19 @@ module.exports = class Cart {
             fs.writeFile(p, JSON.stringify(cart), err => {
                 console.log(err)
             })
-            
+
         })
 
     }
 
 
-    static deleteProduct = (id , productPrice) => {
-        fs.readFile(p, (err , fileContent) => {
+    static deleteProduct = (id, productPrice) => {
+        fs.readFile(p, (err, fileContent) => {
             if (err) {
-                console.log(err);        
+                console.log(err);
             }
 
-            const updatedCart = { ...JSON.parse(fileContent)}
+            const updatedCart = { ...JSON.parse(fileContent) }
             const product = updatedCart.products.findIndex(prod => prod.id === id)
             const productQty = product.qty
             updatedCart.products = updatedCart.products.filter(prod => prod.id !== id)
@@ -58,6 +58,18 @@ module.exports = class Cart {
             fs.writeFile(p, JSON.stringify(updatedCart), err => {
                 console.log(err)
             })
+        })
+    }
+
+
+    static getCart(cb) {
+        fs.readFile(p, (err, fileContent) => {
+            const cart = JSON.parse(fileContent)
+            if (err) {
+                cb(null)
+            } else {
+                cb(cart)
+            }
         })
     }
 

@@ -1,8 +1,29 @@
 <%- include('../includes/head.ejs') %>
     <link rel="stylesheet" href="/css/product.css">
-</head>
+    </head>
 
-<body>
-    <%- include('../includes/navigation.ejs') %>
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+            <main>
+                <% if (products.length> 0) { %>
 
-    <%- include('../includes/end.ejs') %>
+                  <ul>
+
+                      <% products.forEach(p => { %>
+                        
+                         <li>
+                             <%= p.prodcutData.title %> (<%= p.qty %>) 
+                         </li>
+
+                        <% }) %>
+                      </ul>
+
+                    <% } else { %>
+
+                        <h1>No Product In Cart</h1>
+
+
+                        <% } %>
+
+            </main>
+            <%- include('../includes/end.ejs') %>
