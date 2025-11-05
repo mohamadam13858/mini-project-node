@@ -20,8 +20,9 @@ exports.postAddProduct = (req, res, next) => {
         imageUrl: imageUrl  ,
         description: description,
     }).then(result => {
-        // console.log(result)
+        // console.log(result)g
         console.log('created product')
+        res.redirect('/admin/products');
     }).catch(err => console.log(err));
 };
 
