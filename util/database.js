@@ -1,11 +1,8 @@
-const { Sequelize } = require('sequelize');
+const Sequelize = require('sequelize');
 
-const sequelize = new Sequelize({
+const sequelize = new Sequelize('node-complete', 'root', "1385", {
   dialect: 'mysql',
-  host: 'localhost',
-  database: 'node-complete',
-  username: 'root',
-  password: '1385',
+  host: 'localhost'
 });
 
 module.exports = sequelize;
