@@ -59,7 +59,7 @@ userSchema.methods.removeFromCart = function (productId) {
 
 userSchema.methods.clearCart = function () {
     this.cart = { items: [] }
-    return this
+    return this.save()
 }
 
 module.exports = mongoose.model('User', userSchema)
@@ -154,7 +154,7 @@ module.exports = mongoose.model('User', userSchema)
 //         }
 //       }
 //       return db.collection('orders').insertOne(order)
-//     }).then(result => {
+//     }).then(result => { 
 //       this.cart = { items: [] }
 //       return db.collection('users').updateOne(
 //         { _id: new ObjectId(this._id) },
