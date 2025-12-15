@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session')
 const MongoDBStore = require('connect-mongodb-session')(session)
 const mongoose = require('mongoose')
+const csrf = require('csurf')
 
 const User = require('./models/user')
 
@@ -17,6 +18,8 @@ const store = new MongoDBStore({
     collection: 'sessions'
 })
 
+const csrfProtection = csrf()
+
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
@@ -27,6 +30,8 @@ const authRoutes = require('./routes/auth')
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({ secret: "my mohamad", resave: false, saveUninitialized: false , store: store}))
+
+app.use(csrfProtection )
 
 app.use((req, res, next) => {
     if (!req.session.user) {
