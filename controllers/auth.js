@@ -1,12 +1,13 @@
 const bcrypt = require('bcryptjs');
+const sendEmail = require('../util/mailer')
 
 const User = require('../models/user');
 
 exports.getLogin = (req, res, next) => {
   let message = req.flash('error')
-  if (message.length > 0 ) {
+  if (message.length > 0) {
     message = message[0]
-  }else{
+  } else {
     message = null
   }
   res.render('auth/login', {
@@ -17,9 +18,16 @@ exports.getLogin = (req, res, next) => {
 };
 
 exports.getSignup = (req, res, next) => {
+  let message = req.flash('error')
+  if (message.length > 0) {
+    message = message[0]
+  } else {
+    message = null
+  }
   res.render('auth/signup', {
     path: '/signup',
-    pageTitle: 'Signup'
+    pageTitle: 'Signup',
+    errorMessage: message
   });
 };
 
@@ -40,9 +48,16 @@ exports.postLogin = (req, res, next) => {
             req.session.user = user;
             return req.session.save(err => {
               console.log(err);
+              sendEmail(
+                user.email,
+                'خوش آمدی دوباره! 👋',
+                'لاگین موفقیت‌آمیز بود. خوشحالیم که برگشتی!',
+                '<h2>لاگین موفقیت‌آمیز!</h2><p>خوشحالیم که دوباره برگشتی 😊</p>'
+              );
               res.redirect('/');
             });
           }
+          req.flash('error', 'Invalid email or password.');
           res.redirect('/login');
         })
         .catch(err => {
@@ -60,6 +75,7 @@ exports.postSignup = (req, res, next) => {
   User.findOne({ email: email })
     .then(userDoc => {
       if (userDoc) {
+        req.flash('error', 'E-Mail exists already');
         return res.redirect('/signup');
       }
       return bcrypt
