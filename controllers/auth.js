@@ -1,6 +1,7 @@
 const crypto = require('crypto')
 const bcrypt = require('bcryptjs');
 const sendEmail = require('../util/mailer')
+const { validationResult } = require('express-validator'); // خط ۴ اصلاح شد
 
 const User = require('../models/user');
 
@@ -73,10 +74,22 @@ exports.postSignup = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log(errors.array());
+    return res.status(422).render('auth/signup', {
+      path: '/signup',
+      pageTitle: 'Signup',
+      errorMessage: errors.array()[0].msg
+    });
+  }
   User.findOne({ email: email })
     .then(userDoc => {
       if (userDoc) {
-        req.flash('error', 'E-Mail exists already');
+        req.flash(
+          'error',
+          'E-Mail exists already, please pick a different one.'
+        );
         return res.redirect('/signup');
       }
       return bcrypt
@@ -91,6 +104,9 @@ exports.postSignup = (req, res, next) => {
         })
         .then(result => {
           res.redirect('/login');
+        })
+        .catch(err => {
+          console.log(err);
         });
     })
     .catch(err => {
@@ -105,7 +121,6 @@ exports.postLogout = (req, res, next) => {
   });
 };
 
-
 exports.getReset = (req, res, next) => {
   let message = req.flash('error')
   if (message.length > 0) {
@@ -119,7 +134,6 @@ exports.getReset = (req, res, next) => {
     errorMessage: message
   });
 };
-
 
 exports.postReset = (req, res, next) => {
   crypto.randomBytes(32, (err, buffer) => {
@@ -147,7 +161,6 @@ exports.postReset = (req, res, next) => {
   })
 }
 
-
 exports.getNewPassword = (req, res, next) => {
   const token = req.params.token
   User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } }).then(user => {
@@ -165,11 +178,7 @@ exports.getNewPassword = (req, res, next) => {
       passwordToken: token
     });
   }).catch(err => console.log(err))
-
 }
-
-
-
 
 exports.postNewPassword = (req, res, next) => {
   const newPassword = req.body.password
