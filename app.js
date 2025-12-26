@@ -1,5 +1,5 @@
+require('dotenv').config()
 const path = require('path');
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session')
@@ -15,7 +15,7 @@ const errorController = require('./controllers/error');
 
 const app = express();
 const store = new MongoDBStore({
-    uri: MONGODB_URI,
+    uri: process.env.MONGODB_URI,
     collection: 'sessions'
 })
 
@@ -102,7 +102,7 @@ app.use((error, req, res, next) => {
 
 
 
-mongoose.connect(process.env.DATABASE_KEY).then(result => {
+mongoose.connect(process.env.MONGODB_URI).then(result => {
     app.listen(3000)
 }).catch(err => console.log(err))
 
