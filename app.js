@@ -12,7 +12,6 @@ const multer = require('multer')
 const User = require('./models/user')
 
 const errorController = require('./controllers/error');
-const MONGODB_URI = 'mongodb+srv://mh711748_db_user:13851358@cluster0.kozx12z.mongodb.net/shop?appName=Cluster0'
 
 const app = express();
 const store = new MongoDBStore({
@@ -103,7 +102,7 @@ app.use((error, req, res, next) => {
 
 
 
-mongoose.connect(MONGODB_URI).then(result => {
+mongoose.connect(process.env.DATABASE_KEY).then(result => {
     app.listen(3000)
 }).catch(err => console.log(err))
 
